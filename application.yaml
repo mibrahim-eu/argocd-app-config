@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp-argo-application
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/mibrahim-eu/argocd-app-config.git
+    targetRevision: HEAD
+    path: dev
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: myapp
+
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
+    automated:
+      selfHeal: true
+      prune: true
+
+#Prune: will delete the k8s resource, if we delete the file of the resource from the GIT repo
+#selfHeal: it will apply the configuration of GIT. If someone does any manuall configuration, it will be rolled backup automatically by ArgoCD
